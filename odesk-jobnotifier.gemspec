@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'odesk/jobnotifier/version'
+require 'odesk_jobnotifier/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'odesk-jobnotifier'
-  spec.version       = Odesk::Jobnotifier::VERSION
+  spec.version       = OdeskJobnotifier::VERSION
   spec.authors       = ['Anton Kolomiychuk']
   spec.email         = ['kolomiychuk.anton+gh@gmail.com']
   spec.summary       = 'Get real-time notifications about new jobs on Odesk on your Mac.'
