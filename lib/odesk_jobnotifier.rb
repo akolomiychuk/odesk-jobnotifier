@@ -1,3 +1,8 @@
+# TODO@akolomiychuk: Add yml configuration support.
+# TODO@akolomiychuk: Add binary.
+# TODO@akolomiychuk: Threads? JRuby?
+# TODO@akolomiychuk: Ability to store specific jobs in file, for later reading.
+# TODO@akolomiychuk: Handling bad requests.
 require 'odesk_jobfetch'
 require 'odesk_jobnotifier/version'
 
@@ -24,6 +29,7 @@ class OdeskJobnotifier
 
         unless jobs.empty?
           timestamps[index] = last_job_timestamp(jobs)
+          jobs.each { |j| notify(j) }
         end
       end
 
@@ -42,5 +48,14 @@ class OdeskJobnotifier
 
   def last_job_timestamp(jobs)
     jobs.map { |j| DateTime.parse(j['publish_time']) }.max
+  end
+
+  def notify(job)
+    params = {
+      title: "#{job['title']} | #{job['client']['total_spent']}",
+      open: job['url']
+    }
+
+    TerminalNotifier.notify(job['snippet'], params)
   end
 end
