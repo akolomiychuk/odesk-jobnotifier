@@ -1,8 +1,8 @@
-# TODO@akolomiychuk: Add yml configuration support.
 # TODO@akolomiychuk: Threads? JRuby?
 # TODO@akolomiychuk: Ability to store specific jobs in file, for later reading.
 # TODO@akolomiychuk: Handling bad requests.
 require 'odesk_jobfetch'
+require 'terminal-notifier'
 require 'odesk_jobnotifier/command_line_tool'
 require 'odesk_jobnotifier/version'
 

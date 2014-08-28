@@ -1,0 +1,11 @@
+account:
+  login: odesk_username
+  password: odesk_password
+queries:
+  - spellcheck: '1'
+    highlight: '1'
+    sortBy: 's_ctime desk'
+    c1[]: 'Web Development'
+    c2[]: 'Web Programming'
+    amount[]: '100'
+interval: 30
