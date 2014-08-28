@@ -8,4 +8,5 @@ queries:
     c1[]: 'Web Development'
     c2[]: 'Web Programming'
     amount[]: '100'
+  - 'https://www.odesk.com/jobs/?q=ruby&spellcheck=1&highlight=1&sortBy=s_ctime+desc&c1%5B%5D=Web+Development'
 interval: 30

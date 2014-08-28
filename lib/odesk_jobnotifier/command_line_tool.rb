@@ -1,4 +1,3 @@
-# TODO@akolomiychuk: Allow specifying GET queries in config instead of hashes.
 # TODO@akolomiychuk: Handling interrupt.
 require 'yaml'
 
@@ -7,7 +6,9 @@ class OdeskJobnotifier
     def initialize(config_dir = Dir.home)
       file_path = "#{config_dir}/.odesk-jobnotifier.yml"
       if File.exists?(file_path)
-        @config = convert_params(YAML.load_file(file_path))
+        config = YAML.load_file(file_path)
+        config['queries'] = convert_query_string_params(config['queries'])
+        @config = convert_params(config)
       else
         abort("Configuration file #{file_path} is missing.")
       end
@@ -18,6 +19,20 @@ class OdeskJobnotifier
     end
 
     private
+
+    def convert_query_string_params(queries)
+      queries.map do |q|
+        if q.instance_of?(String)
+          CGI.parse(URI(q).query).inject({}) do |h, (k, v)|
+            h[k] = v.first
+
+            h
+          end
+        else
+          q
+        end
+      end
+    end
 
     def convert_params(params)
       params.inject({}) do |memo, (k, v)|
