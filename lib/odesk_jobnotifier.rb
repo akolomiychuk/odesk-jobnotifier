@@ -27,10 +27,7 @@ class OdeskJobnotifier
 
     loop do
       @queries.each_with_index do |query, index|
-        jobs = @ojf.fetch(query)
-        jobs.select! do |j|
-          DateTime.parse(j['publish_time']) > timestamps[index]
-        end
+        jobs = filter_jobs(@ojf.fetch(query), timestamps[index])
 
         unless jobs.empty?
           timestamps[index] = last_job_timestamp(jobs)
@@ -43,6 +40,12 @@ class OdeskJobnotifier
   end
 
   private
+
+  def filter_jobs(jobs, timestamp)
+    jobs.select do |j|
+      DateTime.parse(j['publish_time']) > timestamp
+    end
+  end
 
   def last_timestamps
     @queries.map do |q|
