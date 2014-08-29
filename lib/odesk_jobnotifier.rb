@@ -6,6 +6,11 @@ require 'terminal-notifier'
 require 'odesk_jobnotifier/command_line_tool'
 require 'odesk_jobnotifier/version'
 
+trap 'SIGINT' do
+  puts 'Exiting...'
+  exit
+end
+
 class OdeskJobnotifier
   def initialize(params)
     @account = params[:account]
@@ -52,7 +57,7 @@ class OdeskJobnotifier
 
   def notify(job)
     params = {
-      title: "#{job['title']} | #{job['client']['total_spent']}",
+      title: "$#{job['client']['total_spent']} | #{job['title']}",
       open: job['url']
     }
 
