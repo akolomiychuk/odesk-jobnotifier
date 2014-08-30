@@ -1,4 +1,3 @@
-# TODO@akolomiychuk: Handling interrupt.
 require 'yaml'
 
 class OdeskJobnotifier

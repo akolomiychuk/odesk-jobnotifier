@@ -1,6 +1,5 @@
 # TODO@akolomiychuk: Threads? JRuby?
 # TODO@akolomiychuk: Ability to store specific jobs in file, for later reading.
-# TODO@akolomiychuk: Handling bad requests.
 require 'odesk_jobfetch'
 require 'terminal-notifier'
 require 'odesk_jobnotifier/command_line_tool'
@@ -27,7 +26,7 @@ class OdeskJobnotifier
 
     loop do
       @queries.each_with_index do |query, index|
-        jobs = filter_jobs(@ojf.fetch(query), timestamps[index])
+        jobs = filter_jobs(fetch_last_jobs(query), timestamps[index])
 
         unless jobs.empty?
           timestamps[index] = last_job_timestamp(jobs)
@@ -40,6 +39,15 @@ class OdeskJobnotifier
   end
 
   private
+
+  def fetch_last_jobs(query)
+    begin
+      @ojf.fetch(query)
+    rescue
+      puts 'Error getting last jobs. Skipping...'
+      []
+    end
+  end
 
   def filter_jobs(jobs, timestamp)
     jobs.select do |j|
