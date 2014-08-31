@@ -1,4 +1,3 @@
-# TODO@akolomiychuk: Threads? JRuby?
 # TODO@akolomiychuk: Ability to store specific jobs in file, for later reading.
 require 'odesk_jobfetch'
 require 'terminal-notifier'
@@ -36,13 +35,21 @@ class OdeskJobnotifier
 
   def last_jobs(queries, timestamps)
     total_jobs = []
-    queries.each_with_index do |query, index|
-      jobs = filter_jobs(fetch_last_jobs(query), timestamps[index])
+    threads = job_threads(queries)
+    threads.each_with_index do |t, index|
+      t.join
+      jobs = filter_jobs(t[:jobs], timestamps[index])
       total_jobs += jobs
       timestamps[index] = last_job_timestamp(jobs) unless jobs.empty?
     end
     # Filter the same jobs that can be fetched by different queries.
     [total_jobs.uniq { |j| j['id'] }, timestamps]
+  end
+
+  def job_threads(queries)
+    queries.each_with_object([]) do |query, memo|
+      memo << Thread.new { Thread.current[:jobs] = fetch_last_jobs(query) }
+    end
   end
 
   def fetch_last_jobs(query)
