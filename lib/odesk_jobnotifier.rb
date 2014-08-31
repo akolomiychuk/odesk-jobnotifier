@@ -10,6 +10,7 @@ trap 'SIGINT' do
   exit
 end
 
+# Fetches, filters and notifies about last jobs.
 class OdeskJobnotifier
   def initialize(params)
     @account = params[:account]
@@ -45,12 +46,10 @@ class OdeskJobnotifier
   end
 
   def fetch_last_jobs(query)
-    begin
-      @ojf.fetch(query)
+    @ojf.fetch(query)
     rescue
       puts 'Error getting last jobs. Skipping...'
       []
-    end
   end
 
   def filter_jobs(jobs, timestamp)

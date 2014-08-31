@@ -1,10 +1,11 @@
 require 'yaml'
 
 class OdeskJobnotifier
+  # Handles invoking gem with binary.
   class CommandLineTool
     def initialize(config_dir = Dir.home)
       file_path = "#{config_dir}/.odesk-jobnotifier.yml"
-      if File.exists?(file_path)
+      if File.exist?(file_path)
         config = YAML.load_file(file_path)
         config['queries'] = convert_query_string_params(config['queries'])
         @config = convert_params(config)
@@ -22,10 +23,8 @@ class OdeskJobnotifier
     def convert_query_string_params(queries)
       queries.map do |q|
         if q.instance_of?(String)
-          CGI.parse(URI(q).query).inject({}) do |h, (k, v)|
-            h[k] = v.first
-
-            h
+          CGI.parse(URI(q).query).each_with_object({}) do |(k, v), memo|
+            memo[k] = v.first
           end
         else
           q
@@ -34,7 +33,7 @@ class OdeskJobnotifier
     end
 
     def convert_params(params)
-      params.inject({}) do |memo, (k, v)|
+      params.each_with_object({}) do |(k, v), memo|
         memo[k.to_sym] =
           if v.instance_of?(Hash)
             convert_params(v)
@@ -45,8 +44,6 @@ class OdeskJobnotifier
           else
             memo[k.to_sym] = v
           end
-
-        memo
       end
     end
   end
