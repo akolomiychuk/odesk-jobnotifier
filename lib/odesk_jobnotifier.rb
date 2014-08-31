@@ -25,20 +25,24 @@ class OdeskJobnotifier
     puts 'Start looking for new jobs...'
 
     loop do
-      @queries.each_with_index do |query, index|
-        jobs = filter_jobs(fetch_last_jobs(query), timestamps[index])
-
-        unless jobs.empty?
-          timestamps[index] = last_job_timestamp(jobs)
-          jobs.each { |j| notify(j) }
-        end
-      end
-
+      jobs, timestamps = last_jobs(@queries, timestamps)
+      jobs.each { |j| notify(j) }
       sleep(@interval)
     end
   end
 
   private
+
+  def last_jobs(queries, timestamps)
+    total_jobs = []
+    queries.each_with_index do |query, index|
+      jobs = filter_jobs(fetch_last_jobs(query), timestamps[index])
+      total_jobs += jobs
+      timestamps[index] = last_job_timestamp(jobs) unless jobs.empty?
+    end
+    # Filter the same jobs that can be fetched by different queries.
+    [total_jobs.uniq { |j| j['id'] }, timestamps]
+  end
 
   def fetch_last_jobs(query)
     begin
