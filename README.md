@@ -1,4 +1,5 @@
 # odesk-jobnotifier
+[![Code Climate](https://codeclimate.com/github/akolomiychuk/odesk-jobnotifier/badges/gpa.svg)](https://codeclimate.com/github/akolomiychuk/odesk-jobnotifier)
 
 This gem allow you to get real-time notifications about new Odesk jobs on your
 Mac.
